@@ -476,6 +476,18 @@ func templates(api *confluence.API) (*template.Template, error) {
 			`</ac:structured-macro>`,
 		),
 
+		`ac:panelx`: text(
+			`<ac:adf-extension>`,
+			`<ac:adf-node type="panel">`,
+			`<ac:adf-attribute key="panel-type">{{ or .Type "" }}</ac:adf-attribute>`,
+			`<ac:adf-content>`,
+			`{{ if .Title }}<p><strong>{{ or .Title "" }}</strong></p>{{ end }}`,
+			`<p>{{ .Body }}</p>`,
+			`</ac:adf-content>`,
+			`</ac:adf-node>`,
+			`</ac:adf-extension>`,
+		),
+
 		/* https://confluence.atlassian.com/conf59/recently-updated-macro-792499187.html */
 		`ac:recently-updated`: text(
 			`<ac:structured-macro ac:name="recently-updated">`,
