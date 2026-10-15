@@ -476,12 +476,14 @@ func templates(api *confluence.API) (*template.Template, error) {
 			`</ac:structured-macro>`,
 		),
 
+		// TODO JHW: check that wrapping the body in <p> is valid; a body that
+		// is already a paragraph, list or table ends up nested inside it.
 		`ac:panelx`: text(
 			`<ac:adf-extension>`,
 			`<ac:adf-node type="panel">`,
-			`<ac:adf-attribute key="panel-type">{{ or .Type "" }}</ac:adf-attribute>`,
+			`<ac:adf-attribute key="panel-type">{{ or .Type "" | xmlesc }}</ac:adf-attribute>`,
 			`<ac:adf-content>`,
-			`{{ if .Title }}<p><strong>{{ or .Title "" }}</strong></p>{{ end }}`,
+			`{{ if .Title }}<p><strong>{{ or .Title "" | xmlesc }}</strong></p>{{ end }}`,
 			`<p>{{ .Body }}</p>`,
 			`</ac:adf-content>`,
 			`</ac:adf-node>`,

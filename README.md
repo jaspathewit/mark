@@ -904,6 +904,15 @@ By default, mark provides several built-in templates and macros:
   * BorderStyle: Style of the panel's border
   * BorderColor: Color of the panel's border
 
+* template: `ac:panelx` to display a block of text within a panel new style
+  * Title: Panel title (optional)
+  * Body: Body text of the panel
+  * Type: select panel type
+    * info
+    * tip
+    * note
+    * warning
+
 * template `ac:recently-updated` to display a list of most recently changed content
   * Spaces: List of Spaces to watch (optional, default is current Space)
   * ShowProfilePic: Show profile picture of editor

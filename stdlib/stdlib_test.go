@@ -114,6 +114,77 @@ func TestColumnBodyIsRichText(t *testing.T) {
 	assert.Contains(t, rendered, `<ac:parameter ac:name="width">50%&#34; x=&#34;</ac:parameter>`)
 }
 
+// TestPanelxRendersADFPanel: ac:panelx emits Confluence's new-style panel as
+// an ADF extension. The type and title are plain values and are escaped; the
+// body is rich text, as in ac:panel, and is not. The title paragraph is left
+// out entirely when no title is given.
+func TestPanelxRendersADFPanel(t *testing.T) {
+	lib, err := New(nil)
+	require.NoError(t, err)
+
+	for _, tc := range []struct {
+		name string
+		data map[string]any
+		want string
+	}{
+		{
+			name: "with title",
+			data: map[string]any{
+				"Type":  "info",
+				"Title": "Heads up",
+				"Body":  `<strong>bold</strong> &amp; text`,
+			},
+			want: `<ac:adf-extension>` +
+				`<ac:adf-node type="panel">` +
+				`<ac:adf-attribute key="panel-type">info</ac:adf-attribute>` +
+				`<ac:adf-content>` +
+				`<p><strong>Heads up</strong></p>` +
+				`<p><strong>bold</strong> &amp; text</p>` +
+				`</ac:adf-content>` +
+				`</ac:adf-node>` +
+				`</ac:adf-extension>`,
+		},
+		{
+			name: "without title",
+			data: map[string]any{
+				"Type": "warning",
+				"Body": "careful",
+			},
+			want: `<ac:adf-extension>` +
+				`<ac:adf-node type="panel">` +
+				`<ac:adf-attribute key="panel-type">warning</ac:adf-attribute>` +
+				`<ac:adf-content>` +
+				`<p>careful</p>` +
+				`</ac:adf-content>` +
+				`</ac:adf-node>` +
+				`</ac:adf-extension>`,
+		},
+		{
+			name: "escapes type and title",
+			data: map[string]any{
+				"Type":  `note"<x>`,
+				"Title": `a "quoted" <title> & more`,
+				"Body":  "body",
+			},
+			want: `<ac:adf-extension>` +
+				`<ac:adf-node type="panel">` +
+				`<ac:adf-attribute key="panel-type">note&#34;&lt;x&gt;</ac:adf-attribute>` +
+				`<ac:adf-content>` +
+				`<p><strong>a &#34;quoted&#34; &lt;title&gt; &amp; more</strong></p>` +
+				`<p>body</p>` +
+				`</ac:adf-content>` +
+				`</ac:adf-node>` +
+				`</ac:adf-extension>`,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var out strings.Builder
+			require.NoError(t, lib.Templates.ExecuteTemplate(&out, "ac:panelx", tc.data))
+			assert.Equal(t, tc.want, out.String())
+		})
+	}
+}
+
 // A control character has no escape in XML, so xmlesc and cdata replace it:
 // an ANSI colour code in a code block made the page unpublishable.
 func TestTemplatesReplaceIllegalXMLCharacters(t *testing.T) {
