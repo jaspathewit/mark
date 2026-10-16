@@ -42,7 +42,7 @@ func TestMathFeature(t *testing.T) {
 	require.Len(t, attachments, 1)
 	assert.True(t, strings.HasSuffix(attachments[0].Filename, ".svg"))
 	assert.Contains(t, actual, `<ri:attachment ri:filename="`+attachments[0].Filename+`"/>`)
-	assert.Contains(t, actual, `ac:width="`+attachments[0].Width+`"`)
+	assert.Contains(t, actual, `ac:original-width="`+attachments[0].Width+`"`)
 
 	assert.NotContains(t, actual, "katex", "no stylesheet-dependent markup survives")
 	assert.NotContains(t, actual, "<math", "and no MathML twin")
@@ -82,7 +82,9 @@ func TestMathInlineImageIsMarkedInline(t *testing.T) {
 	assertWellFormed(t, actual)
 
 	assert.Equal(t, 1, strings.Count(actual, `ac:inline="true"`), "only the inline formula is marked")
-	assert.Contains(t, actual, `ac:alt="x^2" ac:inline="true">`)
+	// Only its original size: Confluence will not inline an image with a width of
+	// its own in a table cell.
+	assert.Regexp(t, `<ac:image ac:original-width="\d+" ac:original-height="\d+" ac:alt="x\^2" ac:inline="true">`, actual)
 	assert.Contains(t, actual, `ac:alt="y^2">`)
 }
 
@@ -149,7 +151,7 @@ func TestMathPNGFormat(t *testing.T) {
 	assert.Contains(t, actual, `<ri:attachment ri:filename="`+attachments[0].Filename+`"/>`)
 
 	// The formula still occupies the space it asked for, whatever the format.
-	assert.Contains(t, actual, `ac:width="70"`)
+	assert.Contains(t, actual, `ac:original-width="70"`)
 }
 
 // TestMathRejectsAnUnknownFormat covers the value the flag will not take. The
