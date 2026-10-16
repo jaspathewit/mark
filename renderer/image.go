@@ -196,6 +196,7 @@ func (r *ConfluenceImageRenderer) renderImage(writer util.BufWriter, source []by
 				Alt            string
 				Attachment     string
 				Url            string
+				Inline         bool
 			}{
 				effectiveAlign,
 				effectiveLayout,
@@ -207,6 +208,7 @@ func (r *ConfluenceImageRenderer) renderImage(writer util.BufWriter, source []by
 				r.imageAlt(n, source),
 				"",
 				destination,
+				false,
 			},
 		)
 	} else {
@@ -231,6 +233,7 @@ func (r *ConfluenceImageRenderer) renderImage(writer util.BufWriter, source []by
 				Alt            string
 				Attachment     string
 				Url            string
+				Inline         bool
 			}{
 				effectiveAlign,
 				effectiveLayout,
@@ -242,6 +245,7 @@ func (r *ConfluenceImageRenderer) renderImage(writer util.BufWriter, source []by
 				r.imageAlt(n, source),
 				attached.Filename,
 				"",
+				false,
 			},
 		)
 	}
