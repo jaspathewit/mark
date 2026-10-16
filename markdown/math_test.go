@@ -73,6 +73,19 @@ func TestMathDisplayAndInlineAreDifferentImages(t *testing.T) {
 	assert.NotEqual(t, attachments[0].Filename, attachments[1].Filename)
 }
 
+// TestMathInlineImageIsMarkedInline covers where Confluence puts the picture: a
+// formula written in the run of a sentence is marked ac:inline so it stays in
+// that sentence, and a display formula is not, so it keeps a line of its own.
+func TestMathInlineImageIsMarkedInline(t *testing.T) {
+	actual, _, err := compileMath(t, "Inline $x^2$ and display:\n\n$$y^2$$\n", "math")
+	require.NoError(t, err)
+	assertWellFormed(t, actual)
+
+	assert.Equal(t, 1, strings.Count(actual, `ac:inline="true"`), "only the inline formula is marked")
+	assert.Contains(t, actual, `ac:alt="x^2" ac:inline="true">`)
+	assert.Contains(t, actual, `ac:alt="y^2">`)
+}
+
 // TestMathRepeatedFormulaIsUploadedOnce covers the deduplication. A symbol
 // repeated through a page is one image; uploading it once per occurrence would
 // put dozens of identical attachments on the page.

@@ -102,6 +102,7 @@ func (r *ConfluenceMathRenderer) writeFormula(writer util.BufWriter, equation []
 			Alt            string
 			Attachment     string
 			Url            string
+			Inline         bool
 		}{
 			"",
 			"",
@@ -113,6 +114,9 @@ func (r *ConfluenceMathRenderer) writeFormula(writer util.BufWriter, equation []
 			string(equation),
 			rendered.Filename,
 			"",
+			// A formula written in the run of a sentence has to stay in it; without
+			// ac:inline Confluence lifts the image out onto a line of its own.
+			!display,
 		},
 	)
 	if err != nil {

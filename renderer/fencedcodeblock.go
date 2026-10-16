@@ -255,6 +255,7 @@ func (r *ConfluenceFencedCodeBlockRenderer) renderFencedCodeBlock(writer util.Bu
 				Alt            string
 				Attachment     string
 				Url            string
+				Inline         bool
 			}{
 				effectiveAlign,
 				effectiveLayout,
@@ -271,6 +272,7 @@ func (r *ConfluenceFencedCodeBlockRenderer) renderFencedCodeBlock(writer util.Bu
 				"",
 				attachment.Filename,
 				"",
+				false,
 			},
 		)
 
@@ -332,6 +334,7 @@ func (r *ConfluenceFencedCodeBlockRenderer) renderFencedCodeBlock(writer util.Bu
 				Alt            string
 				Attachment     string
 				Url            string
+				Inline         bool
 			}{
 				effectiveAlign,
 				effectiveLayout,
@@ -348,6 +351,7 @@ func (r *ConfluenceFencedCodeBlockRenderer) renderFencedCodeBlock(writer util.Bu
 				"",
 				att.Filename,
 				"",
+				false,
 			},
 		)
 
