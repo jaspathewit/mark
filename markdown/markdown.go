@@ -785,6 +785,10 @@ func (c *ConfluenceExtension) Extend(m goldmark.Markdown) {
 			util.Prioritized(cparser.NewMathParser(), 99),
 		))
 
+		m.Parser().AddOptions(parser.WithASTTransformers(
+			util.Prioritized(ctransformer.NewMathTableCellTransformer(), 110),
+		))
+
 		m.Renderer().AddOptions(renderer.WithNodeRenderers(
 			util.Prioritized(crenderer.NewConfluenceMathRenderer(c.Stdlib, c, c.MarkConfig), 100),
 		))

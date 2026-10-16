@@ -88,6 +88,18 @@ func TestMathInlineImageIsMarkedInline(t *testing.T) {
 	assert.Contains(t, actual, `ac:alt="y^2">`)
 }
 
+// TestMathInlineInTableCellIsInAParagraph covers the table cell: Confluence
+// sets an image inline only inside a paragraph, which its editor always puts in
+// a cell and GFM does not. A cell without an inline formula is left as it was.
+func TestMathInlineInTableCellIsInAParagraph(t *testing.T) {
+	actual, _, err := compileMath(t, "| a | b |\n| --- | --- |\n| x $x^2$ y | plain |\n", "math")
+	require.NoError(t, err)
+	assertWellFormed(t, actual)
+
+	assert.Regexp(t, `<td><p>x <ac:image [^>]*ac:inline="true">.*?</ac:image> y</p>\s*</td>`, actual)
+	assert.Contains(t, actual, "<td>plain</td>")
+}
+
 // TestMathRepeatedFormulaIsUploadedOnce covers the deduplication. A symbol
 // repeated through a page is one image; uploading it once per occurrence would
 // put dozens of identical attachments on the page.
