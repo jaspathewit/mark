@@ -90,9 +90,6 @@ func (r *ConfluenceMathRenderer) writeFormula(writer util.BufWriter, equation []
 
 	width, height := rendered.Width, rendered.Height
 	align := "center"
-	if !display {
-		align = ""
-	}
 
 	err = r.Stdlib.Templates.ExecuteTemplate(
 		writer,

@@ -82,7 +82,7 @@ func TestMathInlineImageIsMarkedInline(t *testing.T) {
 	assertWellFormed(t, actual)
 
 	assert.Equal(t, 1, strings.Count(actual, `ac:inline="true"`), "only the inline formula is marked")
-	assert.Regexp(t, `<ac:image ac:original-width="\d+" ac:original-height="\d+" ac:custom-width="true" ac:width="\d+" ac:height="\d+" ac:alt="x\^2" ac:inline="true">`, actual)
+	assert.Regexp(t, `<ac:image ac:align="center" ac:layout="center" ac:original-width="\d+" ac:original-height="\d+" ac:custom-width="true" ac:width="\d+" ac:height="\d+" ac:alt="x\^2" ac:inline="true">`, actual)
 	assert.Contains(t, actual, `ac:alt="y^2">`)
 }
 
