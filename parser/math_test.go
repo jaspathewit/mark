@@ -52,12 +52,14 @@ func TestMathDelimiters(t *testing.T) {
 		want   []string
 	}{
 		{"dollar is inline", `An $E = mc^2$ formula.`, []string{"inline:E = mc^2"}},
+		{"dollar on its own line is display", `$E = mc^2$`, []string{"display:E = mc^2"}},
+		{"double dollar in a sentence is inline", `An $$E = mc^2$$ formula.`, []string{"inline:E = mc^2"}},
 		{"double dollar is display", `$$E = mc^2$$`, []string{"display:E = mc^2"}},
 		{"paren is inline", `An \(E = mc^2\) formula.`, []string{"inline:E = mc^2"}},
 		{"bracket is display", `\[E = mc^2\]`, []string{"display:E = mc^2"}},
 		{"several in one line", `$a$ and $b$`, []string{"inline:a", "inline:b"}},
 		{"display may span lines", "$$\na + b\n$$", []string{"display:\na + b\n"}},
-		{"markup inside is not markup", `$a_1 * b_2$`, []string{"inline:a_1 * b_2"}},
+		{"markup inside is not markup", `An $a_1 * b_2$ formula.`, []string{"inline:a_1 * b_2"}},
 	}
 
 	for _, tt := range tests {

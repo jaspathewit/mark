@@ -51,7 +51,7 @@ func NewMath(equation []byte, display bool) *Math {
 type delimiter struct {
 	open  string
 	close string
-	// display selects TeX's display mode.
+	// display selects TeX's display mode for a formula on a line of its own.
 	display bool
 	// multiline says whether the formula may run past the end of the line.
 	// Display formulas usually do; an inline one that appears to is far more
@@ -76,7 +76,7 @@ var delimiters = []delimiter{
 	{open: "$$", close: "$$", display: true, multiline: true},
 	{open: `\[`, close: `\]`, display: true, multiline: true, lineWide: true},
 	{open: `\(`, close: `\)`},
-	{open: "$", close: "$", strict: true},
+	{open: "$", close: "$", display: true, strict: true},
 }
 
 type mathParser struct {
@@ -123,7 +123,11 @@ func (s *mathParser) Parse(parent ast.Node, block text.Reader, pc parser.Context
 
 		block.Advance(width)
 
-		return NewMath(equation, d.display)
+		// A formula in the run of a sentence is set inline whichever marker it
+		// was written with; only one with its line to itself is displayed.
+		display := d.display && spansWholeLine(source, start, start+width)
+
+		return NewMath(equation, display)
 	}
 
 	return nil

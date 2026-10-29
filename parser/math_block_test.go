@@ -54,9 +54,9 @@ func TestMathStillSpansLinesWithinOneBlock(t *testing.T) {
 			want:   []string{"display:\n\\int_0^1 x\\,dx\n"},
 		},
 		{
-			name:   "display formula wrapped mid-paragraph",
+			name:   "double dollar wrapped mid-paragraph is inline",
 			source: "Text before $$a +\nb$$ and text after.\n",
-			want:   []string{"display:a +\nb"},
+			want:   []string{"inline:a +\nb"},
 		},
 		{
 			name:   "bracket form across lines",
