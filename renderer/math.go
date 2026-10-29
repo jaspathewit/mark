@@ -88,12 +88,10 @@ func (r *ConfluenceMathRenderer) writeFormula(writer util.BufWriter, equation []
 		r.Attachments.Attach(rendered)
 	}
 
-	// Confluence will not set an image inline in a table cell when it carries a
-	// width of its own, so an inline formula gives only its original size.
 	width, height := rendered.Width, rendered.Height
 	align := "center"
 	if !display {
-		width, height, align = "", "", ""
+		align = ""
 	}
 
 	err = r.Stdlib.Templates.ExecuteTemplate(
