@@ -90,6 +90,9 @@ func (r *ConfluenceMathRenderer) writeFormula(writer util.BufWriter, equation []
 
 	width, height := rendered.Width, rendered.Height
 	align := "center"
+	if !display {
+		align = ""
+	}
 
 	err = r.Stdlib.Templates.ExecuteTemplate(
 		writer,
@@ -117,9 +120,7 @@ func (r *ConfluenceMathRenderer) writeFormula(writer util.BufWriter, equation []
 			string(equation),
 			rendered.Filename,
 			"",
-			// A formula written in the run of a sentence has to stay in it; without
-			// ac:inline Confluence lifts the image out onto a line of its own.
-			!display,
+			false,
 		},
 	)
 	if err != nil {

@@ -73,16 +73,17 @@ func TestMathDisplayAndInlineAreDifferentImages(t *testing.T) {
 	assert.NotEqual(t, attachments[0].Filename, attachments[1].Filename)
 }
 
-// TestMathInlineImageIsMarkedInline covers where Confluence puts the picture: a
-// formula written in the run of a sentence is marked ac:inline so it stays in
-// that sentence, and a display formula is not, so it keeps a line of its own.
-func TestMathInlineImageIsMarkedInline(t *testing.T) {
+// TestMathInlineImageIsNotAligned covers where Confluence puts the picture: a
+// formula written in the run of a sentence carries no alignment, so it stays in
+// that sentence, and a display formula is centred on a line of its own.
+func TestMathInlineImageIsNotAligned(t *testing.T) {
 	actual, _, err := compileMath(t, "Inline $x^2$ and display:\n\n$$y^2$$\n", "math")
 	require.NoError(t, err)
 	assertWellFormed(t, actual)
 
-	assert.Equal(t, 1, strings.Count(actual, `ac:inline="true"`), "only the inline formula is marked")
-	assert.Regexp(t, `<ac:image ac:align="center" ac:layout="center" ac:original-width="\d+" ac:original-height="\d+" ac:custom-width="true" ac:width="\d+" ac:height="\d+" ac:alt="x\^2" ac:inline="true">`, actual)
+	assert.NotContains(t, actual, `ac:inline`)
+	assert.Equal(t, 1, strings.Count(actual, `ac:align="center"`), "only the display formula is centred")
+	assert.Regexp(t, `<ac:image ac:original-width="\d+" ac:original-height="\d+" ac:custom-width="true" ac:width="\d+" ac:height="\d+" ac:alt="x\^2">`, actual)
 	assert.Contains(t, actual, `ac:alt="y^2">`)
 }
 
@@ -94,7 +95,7 @@ func TestMathInlineInTableCellIsInAParagraph(t *testing.T) {
 	require.NoError(t, err)
 	assertWellFormed(t, actual)
 
-	assert.Regexp(t, `<td><p>x <ac:image [^>]*ac:inline="true">.*?</ac:image> y</p>\s*</td>`, actual)
+	assert.Regexp(t, `<td><p>x <ac:image [^>]*ac:alt="x\^2">.*?</ac:image> y</p>\s*</td>`, actual)
 	assert.Contains(t, actual, "<td>plain</td>")
 }
 
